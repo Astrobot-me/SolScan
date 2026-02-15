@@ -14,7 +14,7 @@ export const s = StyleSheet.create({
     paddingTop: 16,
   },
   title: {
-    color: "#FFFFFF",
+    color: "#51a6f1",
     fontSize: 32,
     fontWeight: "700",
     marginBottom: 8,
@@ -49,12 +49,12 @@ export const s = StyleSheet.create({
   },
   btn: {
     flex: 1,
-    backgroundColor: "#14F195",
+    backgroundColor: "#5ca7fb",
     paddingVertical: 16,
     borderRadius: 14,
     alignItems: "center",
     justifyContent: "center",
-    shadowColor: "#14F195",
+    shadowColor: "#5ca7fb",
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 12,
@@ -111,7 +111,7 @@ export const s = StyleSheet.create({
     letterSpacing: -1,
   },
   sol: {
-    color: "#14F195",
+    color: "#5ca7fb",
     fontSize: 18,
     fontWeight: "600",
     marginLeft: 8,
@@ -156,7 +156,7 @@ export const s = StyleSheet.create({
     fontWeight: "500",
   },
   amount: {
-    color: "#14F195",
+    color: "#5ca7fb",
     fontSize: 15,
     fontWeight: "600",
   },
