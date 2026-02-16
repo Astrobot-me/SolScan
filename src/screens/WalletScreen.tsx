@@ -104,7 +104,7 @@ const timeAgo = (ts: number) => {
 
 
 
-export default function WalletScreen() {
+export function WalletScreen() {
 
     const [address, setAddress] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(false);
