@@ -35,7 +35,7 @@ export default function App() {
             <Ionicons
               name={activeTab === "wallet" ? "wallet" : "wallet-outline"}
               size={24}
-              color={activeTab === "wallet" ? "#14F195" : "#6B7280"}
+              color={activeTab === "wallet" ? "#2599ff" : "#6B7280"}
             />
             <Text style={[s.tabLabel, activeTab === "wallet" && s.tabActive]}>
               Wallet
@@ -49,7 +49,7 @@ export default function App() {
             <Ionicons
               name={activeTab === "swap" ? "swap-horizontal" : "swap-horizontal-outline"}
               size={24}
-              color={activeTab === "swap" ? "#14F195" : "#6B7280"}
+              color={activeTab === "swap" ? "#2599ff" : "#6B7280"}
             />
             <Text style={[s.tabLabel, activeTab === "swap" && s.tabActive]}>
               Swap
@@ -85,6 +85,6 @@ const s = StyleSheet.create({
     fontSize: 12,
   },
   tabActive: {
-    color: "#14F195",
+    color: "#2599ff",
   },
 });
