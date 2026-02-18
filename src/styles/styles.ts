@@ -12,6 +12,7 @@ export const s = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 24,
     paddingTop: 16,
+    backgroundColor: "#0D0D12",
   },
   title: {
     color: "#2599ff",

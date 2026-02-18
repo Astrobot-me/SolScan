@@ -74,8 +74,8 @@ export default function SwapScreen() {
              <View style={[s.card, { marginBottom: 10 }]}>
                 <View style={s.cardHeader}>
                     <TouchableOpacity style={s.tokenSelector}>
-                        <View style={[s.tokenIcon, { backgroundColor: "#9945FF" }]}>
-                            <Text style={s.tokenIconText}>S</Text>
+                        <View style={[s.tokenIcon, { backgroundColor: "#4aaa05" }]}>
+                            <Text style={s.tokenIconText}>U</Text>
                         </View>
                         <Text style={s.tokenName}>{toToken}</Text>
                         <Ionicons name="chevron-down" size={18} color="#888" />

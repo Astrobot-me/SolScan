@@ -1,21 +1,18 @@
-import {Stack} from 'expo-router'
+// app/_layout.tsx
+// root layout - wraps entire app with providers
+import { Stack } from "expo-router";
+import { SafeAreaProvider } from "react-native-safe-area-context";
 
-import { View, Text } from 'react-native'
-import React from 'react'
-import { SafeAreaProvider } from 'react-native-safe-area-context'
-
-const RootLayout = () => {
+export default function RootLayout() {
   return (
     <SafeAreaProvider>
-
-        <Stack screenOptions={{ headerShown: false} }>
-
-            <Stack.Screen name='(tabs)'/>
-            <Stack.Screen name='token/[mint]'/>
-
-        </Stack>
+      {/* stack navigator at root level */}
+      <Stack screenOptions={{ headerShown: false }}>
+        {/* (tabs) is a group - renders the tab navigator */}
+        <Stack.Screen name="(tabs)" />
+        {/* token detail screen stacks on top of tabs */}
+        <Stack.Screen name="token/[mint]" />
+      </Stack>
     </SafeAreaProvider>
-  )
-}
-
-export default RootLayout
+  );
+} 

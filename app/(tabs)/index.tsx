@@ -15,7 +15,7 @@ import {
 
 
 } from 'react-native';
-import { s } from "../styles/styles"
+import { s } from "@/styles/styles"
 import { useState } from 'react';
 
 const RPC = "https://api.mainnet-beta.solana.com";
