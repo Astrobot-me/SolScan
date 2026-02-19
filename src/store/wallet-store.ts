@@ -22,16 +22,36 @@ export const useWallet = create<Wallet>((set, get) => ({
 
 	addFavorite: (address: string) => {
 		set((state) => ({
-			favorites : state.favorites.includes(address)
+			favorites: state.favorites.includes(address)
 				? state.favorites
-				: [...state.favorites, address]
+				: [...state.favorites, address],
 		}));
 	},
-	removeFavorite: (address: string) => {},
-	isFavorite: (address: string) => {
-		return false;
+	removeFavorite: (address: string) => {
+		set((state) => ({
+			favorites: state.favorites.filter((item) => item != address),
+		}));
 	},
-	addToHistory: (address: string) => {},
-	clearHistory: () => {},
-	toggleNetwork: () => {},
+	isFavorite: (address: string) => {
+		return get().favorites.includes(address);
+	},
+	addToHistory: (address: string) => {
+		set((state) => ({
+			searchHistory: state.searchHistory.includes(address)
+				? state.searchHistory
+				: [...state.searchHistory, address],
+		}));
+	},
+	clearHistory: () => {
+		set((state) => ({
+			searchHistory: state.searchHistory.filter(
+				(item) => item != state.searchHistory[0],
+			),
+		}));
+	},
+	toggleNetwork: () => {
+		set((state) => ({
+			isDevnet: !state.isDevnet,
+		}));
+	},
 }));
