@@ -10,14 +10,14 @@ import {
     StyleSheet,
     Alert,
     Linking,
-    SafeAreaView,
+    
 
 
 
 } from 'react-native';
 import { s } from "@/styles/styles"
 import { useState } from 'react';
-
+import { SafeAreaView } from 'react-native-safe-area-context';
 const RPC = "https://api.mainnet-beta.solana.com";
 
 
@@ -149,7 +149,8 @@ export default function WalletScreen() {
 
 
 
-        <ScrollView style={s.scroll}>
+        <SafeAreaView style={s.safe} edges={['top']}>
+            <ScrollView style={s.scroll}>
 
             <Text style={s.title}>SolScan</Text>
             <Text style={s.subtitle}>Explore any Solana wallet</Text>
@@ -267,6 +268,7 @@ export default function WalletScreen() {
             )}
         </ScrollView>
 
+        </SafeAreaView>
 
     );
 }

@@ -19,7 +19,7 @@ export default function TabLayout() {
           height: 70,
         },
         // active/inactive colors
-        tabBarActiveTintColor: "#9945FF",
+        tabBarActiveTintColor: "#5ca7fb",
         tabBarInactiveTintColor: "#6B7280",
       }}
     >

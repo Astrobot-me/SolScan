@@ -10,6 +10,7 @@ import {
     StyleSheet
 }
     from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function SwapScreen() {
     const [fromAmount, setFromAmount] = useState("100");
@@ -40,7 +41,8 @@ export default function SwapScreen() {
 
 
     return (
-        <ScrollView style={s.scroll} contentContainerStyle={s.content}>
+        <SafeAreaView style={s.safe} edges={['top']}>
+            <ScrollView style={s.scroll} contentContainerStyle={s.content}>
             <Text style={s.title}>Swap Tokens</Text>
             <View style={[s.card, { marginBottom: 10 }]}>
                 <View style={s.cardHeader}>
@@ -65,13 +67,13 @@ export default function SwapScreen() {
                     <Text style={s.usdText}>$499.749</Text>
                 </View>
             </View>
-           
+
             <View style={s.arrowContainer}>
                 <TouchableOpacity style={s.swapArrow} onPress={swapTokens}>
                     <Ionicons name="arrow-down" size={20} color="#FFF" />
                 </TouchableOpacity>
             </View>
-             <View style={[s.card, { marginBottom: 10 }]}>
+            <View style={[s.card, { marginBottom: 10 }]}>
                 <View style={s.cardHeader}>
                     <TouchableOpacity style={s.tokenSelector}>
                         <View style={[s.tokenIcon, { backgroundColor: "#4aaa05" }]}>
@@ -98,10 +100,15 @@ export default function SwapScreen() {
                 <Text style={s.swapBtnText}>Swap</Text>
             </TouchableOpacity>
         </ScrollView>
+        </SafeAreaView>
     )
 }
 
 const s = StyleSheet.create({
+    safe: {
+        flex: 1,
+        backgroundColor: "#0D0D12",
+    },
     scroll: {
         flex: 1,
         backgroundColor: "#0D0D12",
