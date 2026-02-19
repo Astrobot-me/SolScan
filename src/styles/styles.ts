@@ -41,6 +41,11 @@ export const s = StyleSheet.create({
 		marginBottom: 28,
 		fontWeight: "400",
 	},
+	favWrapper: {
+		position: "absolute",
+		top: 12,
+		right: 12,
+	},
 	networkToggle: {
 		flexDirection: "row",
 		alignItems: "center",
