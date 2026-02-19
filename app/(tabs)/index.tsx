@@ -7,87 +7,21 @@ import {
     FlatList,
     ScrollView,
     ActivityIndicator,
-    StyleSheet,
     Alert,
     Linking,
-    
-
-
 
 } from 'react-native';
 import { s } from "@/styles/styles"
 import { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
-const RPC = "https://api.mainnet-beta.solana.com";
-
-
-async function rpc_call(method: string, params: any[]) {
-
-
-    const res = await fetch(RPC, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ jsonrpc: "2.0", id: 1, method, params })
-
-    })
+import { useWallet } from '@/store/wallet-store';
+import { Ionicons } from '@expo/vector-icons';
 
 
 
-    const data = await res.json();
-    // console.log("data", data)
-    if (data.error) throw new Error(data.error.message);
-    return data.result;
-
-}
 
 
-async function getBalance(sig: string) {
 
-    try {
-        const bal = await rpc_call("getBalance", [sig]);
-        return bal.value / 1_000_000_000;
-    } catch (error) {
-        return 400
-    }
-
-};
-
-
-async function getTransactions(sig: string) {
-    try {
-        const transactions = await rpc_call("getSignaturesForAddress", [sig, { limit: 10 }])
-        return transactions.map((item: any) => {
-            return {
-                sig: item.signature,
-                time: item.blockTime,
-                ok: !item.err,
-
-            }
-        })
-    } catch (error) {
-
-    }
-}
-
-
-async function getTokens(sig: string) {
-    try {
-        const result = await rpc_call("getTokenAccountsByOwner", [
-            sig,
-            { programId: "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA" },
-            { encoding: "jsonParsed", },
-            // {limit : 10}
-        ]);
-        return (result.value || [])
-            .map((a: any) => ({
-                mint: a.account.data.parsed.info.mint,
-                amount: a.account.data.parsed.info.tokenAmount.uiAmount,
-            }))
-            .filter((t: any) => t.amount > 0);
-    } catch (error) {
-
-    }
-}
 
 const short_txn_sig = (sig: string, count: number) => `${sig.slice(0, count)}....${sig.slice(-count)}`
 
@@ -112,6 +46,81 @@ export default function WalletScreen() {
     const [tokens, setTokens] = useState<any[]>([]);
     const [txns, setTxns] = useState<any[]>([]);
 
+    const searchHistory = useWallet(state => state.searchHistory)
+    const isDevnet = useWallet(state => state.isDevnet)
+    const isFavorite = useWallet(state => state.isFavorite)
+    const addToHistory = useWallet(state => state.addToHistory)
+    const toggleNetwork = useWallet(state => state.toggleNetwork)
+
+    const RPC = isDevnet ? "https://api.devnet.solana.com" : "https://api.mainnet-beta.solana.com";
+
+
+    async function rpc_call(method: string, params: any[]) {
+
+
+        const res = await fetch(RPC, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ jsonrpc: "2.0", id: 1, method, params })
+
+        })
+
+
+
+        const data = await res.json();
+        // console.log("data", data)
+        if (data.error) throw new Error(data.error.message);
+        return data.result;
+
+    }
+
+    async function getTokens(sig: string) {
+        try {
+            const result = await rpc_call("getTokenAccountsByOwner", [
+                sig,
+                { programId: "TokenkegQfeZyiNwAJbNbGKPFXCWuBvf9Ss623VQ5DA" },
+                { encoding: "jsonParsed", },
+                // {limit : 10}
+            ]);
+            return (result.value || [])
+                .map((a: any) => ({
+                    mint: a.account.data.parsed.info.mint,
+                    amount: a.account.data.parsed.info.tokenAmount.uiAmount,
+                }))
+                .filter((t: any) => t.amount > 0);
+        } catch (error) {
+
+        }
+    }
+
+    async function getBalance(sig: string) {
+
+        try {
+            const bal = await rpc_call("getBalance", [sig]);
+            return bal.value / 1_000_000_000;
+        } catch (error) {
+            return 400
+        }
+
+    };
+
+
+    async function getTransactions(sig: string) {
+        try {
+            const transactions = await rpc_call("getSignaturesForAddress", [sig, { limit: 10 }])
+            return transactions.map((item: any) => {
+                return {
+                    sig: item.signature,
+                    time: item.blockTime,
+                    ok: !item.err,
+
+                }
+            })
+        } catch (error) {
+
+        }
+    }
+
 
     const search = async () => {
 
@@ -120,6 +129,7 @@ export default function WalletScreen() {
 
         setLoading(true)
         try {
+            addToHistory(address)
             const [bal, txns, tokens] = await Promise.all([
                 getBalance(address),
                 getTransactions(address),
@@ -138,11 +148,43 @@ export default function WalletScreen() {
 
     }
 
+    const searchFromHistory = async (address: string) => {
+        clear()
+        setLoading(true);
+        setAddress(address);
+        addToHistory(address)
+        try {
+            const [bal, txn, token] = await Promise.all([
+
+                getBalance(address),
+                getTransactions(address),
+                getTokens(address)
+            ])
+
+            setBalence(bal)
+            setTxns(txn)
+            setTokens(token)
+
+        } catch (error: any) {
+            Alert.alert("Error", error?.message)
+        }
+        finally {
+            setLoading(false)
+        }
+    }
+
     const tryExample = () => {
         const example = "86xCnPeV69n6t3DnyGvkKobf9FdN2H9oiVDdaMpo2MMY";
         setAddress(example);
     };
 
+
+    const clear = () => {
+        setAddress("");
+        setBalence(null);
+        setTokens([])
+        setTxns([])
+    }
 
     return (
 
@@ -152,121 +194,157 @@ export default function WalletScreen() {
         <SafeAreaView style={s.safe} edges={['top']}>
             <ScrollView style={s.scroll}>
 
-            <Text style={s.title}>SolScan</Text>
-            <Text style={s.subtitle}>Explore any Solana wallet</Text>
-
-            <View style={s.inputContainer} >
-                <TextInput
-                    style={s.input}
-                    placeholder="Enter wallet address..."
-                    placeholderTextColor="#6B7280"
-                    value={address}
-                    onChangeText={setAddress}
-                    autoCapitalize="none"
-                    autoCorrect={false}
-                />
-            </View>
-
-            <View style={s.btnRow}>
-                <TouchableOpacity
-                    style={[s.btn, loading && s.btnDisabled]}
-                    onPress={search}
-                    disabled={loading}
-                    activeOpacity={0.8}
-                >
-                    {loading ? (
-                        <ActivityIndicator color="#000" />
-                    ) : (
-                        <Text style={s.btnText}>Search</Text>
-                    )}
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                    style={s.btnGhost}
-                    onPress={tryExample}
-                    activeOpacity={0.7}
-                >
-                    <Text style={s.btnGhostText} >Demo</Text>
-                </TouchableOpacity>
-            </View>
-
-            {
-                balance != null && (
-                    <View style={s.card}>
-                        <Text style={s.label}>SOL Balance</Text>
-                        <View style={s.balanceRow}>
-                            <Text style={s.balance}>{balance.toFixed(4)}</Text>
-                            <Text style={s.sol}>SOL</Text>
-                        </View>
-                        <Text style={s.addr}>{short_txn_sig(address.trim(), 6)}</Text>
+                <View style={s.header}>
+                    <Text style={s.title}>SolScan</Text>
+                    <Text style={s.subtitle}>Explore any Solana wallet</Text>
+                    <View style={s.headerRight}>
+                        <TouchableOpacity style={s.networkToggle} onPress={toggleNetwork}>
+                            <View style={[s.networkDot, isDevnet && s.networkDotDevnet]} />
+                            <Text style={s.networkText}>
+                                {isDevnet ? "Devnet" : "Mainnet"}
+                            </Text>
+                        </TouchableOpacity>
+                        {/* <ConnectButton
+                            connected={wallet.connected}
+                            connecting={wallet.connecting}
+                            publicKey={wallet.publicKey?.toBase58() ?? null}
+                            onConnect={wallet.connect}
+                            onDisconnect={wallet.disconnect}
+                        /> */}
                     </View>
-                )
-            }
+                </View>
 
-            {/* Transaction List */}
+                <View style={s.inputContainer} >
+                    <TextInput
+                        style={s.input}
+                        placeholder="Enter wallet address..."
+                        placeholderTextColor="#6B7280"
+                        value={address}
+                        onChangeText={setAddress}
+                        autoCapitalize="none"
+                        autoCorrect={false}
+                    />
+                </View>
 
-            {
-                txns && txns.length > 0 && (
+                <View style={s.btnRow}>
+                    <TouchableOpacity
+                        style={[s.btn, loading && s.btnDisabled]}
+                        onPress={search}
+                        disabled={loading}
+                        activeOpacity={0.8}
+                    >
+                        {loading ? (
+                            <ActivityIndicator color="#000" />
+                        ) : (
+                            <Text style={s.btnText}>Search</Text>
+                        )}
+                    </TouchableOpacity>
 
+                    <TouchableOpacity
+                        style={s.btnGhost}
+                        onPress={clear}
+                        activeOpacity={0.7}
+                    >
+                        <Text style={s.btnGhostText} >Clear</Text>
+                    </TouchableOpacity>
+                </View>
+
+                {searchHistory.length > 0 && balance === null && (
+                    <View style={s.historySection}>
+                        <Text style={s.historyTitle}>Recent Searches</Text>
+                        {searchHistory.slice(0, 5).map((addr) => (
+                            <TouchableOpacity
+                                key={addr}
+                                style={s.historyItem}
+                                onPress={() => searchFromHistory(addr)}
+                            >
+                                <Ionicons name="time-outline" size={16} color="#6B7280" />
+                                <Text style={s.historyAddress} numberOfLines={1}>
+                                    {short_txn_sig(addr, 8)}
+                                </Text>
+                                <Ionicons name="chevron-forward" size={16} color="#6B7280" />
+                            </TouchableOpacity>
+                        ))}
+                    </View>
+                )}
+
+                {
+                    balance != null && (
+                        <View style={s.card}>
+                            <Text style={s.label}>SOL Balance</Text>
+                            <View style={s.balanceRow}>
+                                <Text style={s.balance}>{balance.toFixed(4)}</Text>
+                                <Text style={s.sol}>SOL</Text>
+                            </View>
+                            <Text style={s.addr}>{short_txn_sig(address.trim(), 6)}</Text>
+                        </View>
+                    )
+                }
+
+                {/* Transaction List */}
+
+                {
+                    txns && txns.length > 0 && (
+
+                        <>
+
+
+                            <FlatList
+                                data={txns}
+                                keyExtractor={(t) => t.sig}
+                                scrollEnabled={false}
+                                ListHeaderComponent={<Text style={s.section}>Recent Transactions</Text>}
+                                renderItem={({ item }) => (
+                                    <TouchableOpacity
+                                        style={s.row}
+                                        onPress={() => Linking.openURL(`https://solscan.io/tx/${item.sig}`)}
+                                        activeOpacity={0.7}
+                                    >
+                                        <View>
+                                            <Text style={s.mint}>{short_txn_sig(item.sig, 8)}</Text>
+                                            <Text style={s.time}>
+                                                {item.time ? timeAgo(item.time) : "pending"}
+                                            </Text>
+                                        </View>
+                                        <Text
+                                            style={[
+                                                s.statusIcon,
+                                                { color: item.ok ? "#5ca7fb" : "#EF4444" },
+                                            ]}
+                                        >
+                                            {item.ok ? "+" : "-"}
+                                        </Text>
+
+
+                                    </TouchableOpacity>
+                                )}
+                            >
+
+                            </FlatList>
+                        </>
+                    )
+                }
+
+                {/* Owned Tokens */}
+
+                {tokens && tokens.length > 0 && (
                     <>
 
-
                         <FlatList
-                            data={txns}
-                            keyExtractor={(t) => t.sig}
-                            scrollEnabled={false}
-                            ListHeaderComponent={<Text style={s.section}>Recent Transactions</Text>}
+                            data={tokens.slice(0, 5)}
+                            keyExtractor={(t) => t.mint}
+                            scrollEnabled={true}
+                            ListHeaderComponent={<Text style={s.section}>Tokens ({tokens.length})</Text>}
                             renderItem={({ item }) => (
-                                <TouchableOpacity
-                                    style={s.row}
-                                    onPress={() => Linking.openURL(`https://solscan.io/tx/${item.sig}`)}
-                                    activeOpacity={0.7}
-                                >
-                                    <View>
-                                        <Text style={s.mint}>{short_txn_sig(item.sig, 8)}</Text>
-                                        <Text style={s.time}>
-                                            {item.time ? timeAgo(item.time) : "pending"}
-                                        </Text>
-                                    </View>
-                                    <Text
-                                        style={[
-                                            s.statusIcon,
-                                            { color: item.ok ? "#5ca7fb" : "#EF4444" },
-                                        ]}
-                                    >
-                                        {item.ok ? "+" : "-"}
-                                    </Text>
-
-
-                                </TouchableOpacity>
+                                <View style={s.row}>
+                                    <Text style={s.mint}>{short_txn_sig(item.mint, 6)}</Text>
+                                    <Text style={s.amount}>{item.amount}</Text>
+                                </View>
                             )}
-                        >
-
-                        </FlatList>
+                        />
                     </>
-                )
-            }
-
-            {/* Owned Tokens */}
-
-            {tokens && tokens.length > 0 && (
-                <>
-
-                    <FlatList
-                        data={tokens.slice(0, 5)}
-                        keyExtractor={(t) => t.mint}
-                        scrollEnabled={true}
-                        ListHeaderComponent={<Text style={s.section}>Tokens ({tokens.length})</Text>}
-                        renderItem={({ item }) => (
-                            <View style={s.row}>
-                                <Text style={s.mint}>{short_txn_sig(item.mint, 6)}</Text>
-                                <Text style={s.amount}>{item.amount}</Text>
-                            </View>
-                        )}
-                    />
-                </>
-            )}
-        </ScrollView>
+                )}
+            </ScrollView>
 
         </SafeAreaView>
 
