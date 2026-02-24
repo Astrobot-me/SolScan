@@ -1,6 +1,6 @@
 import { View, Text, TouchableOpacity , StyleSheet } from 'react-native'
 import React from 'react'
-import { useWallet } from '@/store/wallet-store'
+import { useWalletStore } from '@/store/wallet-store'
 import { Ionicons } from '@expo/vector-icons';
 
 
@@ -10,10 +10,10 @@ type FavProps = {
 }
 
 const FavoriteButton = ({address} : FavProps) => {
-    const addToFav = useWallet(state => state.addFavorite)
+    const addToFav = useWalletStore(state => state.addFavorite)
     //  fn to call
-    const isFavorite = useWallet(state => state.isFavorite)
-    const removeFavorite = useWallet(state => state.removeFavorite)
+    const isFavorite = useWalletStore(state => state.isFavorite)
+    const removeFavorite = useWalletStore(state => state.removeFavorite)
     //boolean value 
     const isFav = isFavorite(address) 
     return (

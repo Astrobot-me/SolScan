@@ -17,7 +17,7 @@ interface Wallet {
 	toggleNetwork: () => void;
 }
 
-export const useWallet = create<Wallet>()(
+export const useWalletStore = create<Wallet>()(
 	persist(
 		(set, get) => ({
 			favorites: [],

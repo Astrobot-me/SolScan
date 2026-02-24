@@ -4,7 +4,7 @@ import {
     View,
     TextInput,
     TouchableOpacity,
-    FlatList,
+    FlatList,   
     ScrollView,
     ActivityIndicator,
     Alert,
@@ -14,14 +14,9 @@ import {
 import { s } from "@/styles/styles"
 import { useState } from 'react';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useWallet } from '@/store/wallet-store';
+import { useWalletStore } from '@/store/wallet-store';
 import { Ionicons } from '@expo/vector-icons';
 import FavoriteButton from '@/components/FavoriteButton';
-
-
-
-
-
 
 
 const short_txn_sig = (sig: string, count: number) => `${sig.slice(0, count)}....${sig.slice(-count)}`
@@ -47,12 +42,12 @@ export default function WalletScreen() {
     const [tokens, setTokens] = useState<any[]>([]);
     const [txns, setTxns] = useState<any[]>([]);
 
-    const searchHistory = useWallet(state => state.searchHistory)
-    const isDevnet = useWallet(state => state.isDevnet)
-    const isFavorite = useWallet(state => state.isFavorite)
-    const addToFavorite = useWallet(state => state.addFavorite)
-    const addToHistory = useWallet(state => state.addToHistory)
-    const toggleNetwork = useWallet(state => state.toggleNetwork)
+    const searchHistory = useWalletStore(state => state.searchHistory)
+    const isDevnet = useWalletStore(state => state.isDevnet)
+    const isFavorite = useWalletStore(state => state.isFavorite)
+    const addToFavorite = useWalletStore(state => state.addFavorite)
+    const addToHistory = useWalletStore(state => state.addToHistory)
+    const toggleNetwork = useWalletStore(state => state.toggleNetwork)
 
     const RPC = isDevnet ? "https://api.devnet.solana.com" : "https://api.mainnet-beta.solana.com";
 
@@ -197,8 +192,10 @@ export default function WalletScreen() {
             <ScrollView style={s.scroll}>
 
                 <View style={s.header}>
-                    <Text style={s.title}>SolScan</Text>
-                    <Text style={s.subtitle}>Explore any Solana wallet</Text>
+                    <View>
+                        <Text style={s.title}>SolScan</Text>
+                        <Text style={s.subtitle}>Explore any Solana wallet</Text>
+                    </View>
                     <View style={s.headerRight}>
                         <TouchableOpacity style={s.networkToggle} onPress={toggleNetwork}>
                             <View style={[s.networkDot, isDevnet && s.networkDotDevnet]} />

@@ -10,15 +10,15 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { useWallet } from "@/store/wallet-store";
+import { useWalletStore } from "@/store/wallet-store";
 
 export default function SettingsScreen() {
   const router = useRouter();
-  const isDevnet = useWallet((s) => s.isDevnet);
-  const toggleNetwork = useWallet((s) => s.toggleNetwork);
-  const favorites = useWallet((s) => s.favorites);
-  const searchHistory = useWallet((s) => s.searchHistory);
-  const clearHistory = useWallet((s) => s.clearHistory);
+  const isDevnet = useWalletStore((s) => s.isDevnet);
+  const toggleNetwork = useWalletStore((s) => s.toggleNetwork);
+  const favorites = useWalletStore((s) => s.favorites);
+  const searchHistory = useWalletStore((s) => s.searchHistory);
+  const clearHistory = useWalletStore((s) => s.clearHistory);
 
   return (
     <SafeAreaView style={s.safe} edges={["top"]}>
