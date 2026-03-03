@@ -4,7 +4,7 @@ import {
     View,
     TextInput,
     TouchableOpacity,
-    FlatList,   
+    FlatList,
     ScrollView,
     ActivityIndicator,
     Alert,
@@ -17,6 +17,8 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useWalletStore } from '@/store/wallet-store';
 import { Ionicons } from '@expo/vector-icons';
 import FavoriteButton from '@/components/FavoriteButton';
+import { ConnectButton } from '@/components/ConnectionButton';
+import useWallet from '@/hooks/use-wallet';
 
 
 const short_txn_sig = (sig: string, count: number) => `${sig.slice(0, count)}....${sig.slice(-count)}`
@@ -48,6 +50,7 @@ export default function WalletScreen() {
     const addToFavorite = useWalletStore(state => state.addFavorite)
     const addToHistory = useWalletStore(state => state.addToHistory)
     const toggleNetwork = useWalletStore(state => state.toggleNetwork)
+    const wallet = useWallet(); 
 
     const RPC = isDevnet ? "https://api.devnet.solana.com" : "https://api.mainnet-beta.solana.com";
 
@@ -203,13 +206,13 @@ export default function WalletScreen() {
                                 {isDevnet ? "Devnet" : "Mainnet"}
                             </Text>
                         </TouchableOpacity>
-                        {/* <ConnectButton
+                        ? <ConnectButton
                             connected={wallet.connected}
                             connecting={wallet.connecting}
                             publicKey={wallet.publicKey?.toBase58() ?? null}
                             onConnect={wallet.connect}
                             onDisconnect={wallet.disconnect}
-                        /> */}
+                        />
                     </View>
                 </View>
 

@@ -31,7 +31,7 @@ export default function useWallet() {
 
 	const connection = new Connection(clusterApiUrl(cluster), "confirmed");
 
-	const connect = useCallback(async () => {
+	const connect = useCallback(async () => { 
 		setConnecting(true);
 		try {
 			const authres = await transact((wallet: Web3MobileWallet) => {
