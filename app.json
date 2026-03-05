@@ -1,8 +1,8 @@
 {
   "expo": {
     "name": "SolScan",
-     "slug": "solscan",
-    "scheme": "solscan", 
+    "slug": "solscan",
+    "scheme": "solscan",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -22,13 +22,21 @@
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true,
-      "predictiveBackGestureEnabled": false
+      "predictiveBackGestureEnabled": false,
+      "package": "com.anonymous.solscan"
     },
     "web": {
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
       "expo-router"
-    ]
+    ],
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "13e7574a-8d47-48ab-b9c0-70c91301c194"
+      }
+    },
+    "owner": "maxthirty3-projects"
   }
 }

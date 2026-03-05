@@ -16,9 +16,9 @@ import { useWalletStore } from "@/store/wallet-store";
 // import from 'expo-crypto'
 
 const APP_IDENTITY = {
-	uri: "",
-	icon: "",
-	name: "",
+  name: "SolScan",
+  uri: "https://solscan-app.com",
+  icon: "favicon.ico",
 };
 
 export default function useWallet() {

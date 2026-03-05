@@ -198,6 +198,13 @@ export default function WalletScreen() {
                     <View>
                         <Text style={s.title}>SolScan</Text>
                         <Text style={s.subtitle}>Explore any Solana wallet</Text>
+                        <ConnectButton
+                            connected={wallet.connected}
+                            connecting={wallet.connecting}
+                            publicKey={wallet.publicKey?.toBase58() ?? null}
+                            onConnect={wallet.connect}
+                            onDisconnect={wallet.disconnect}
+                        />
                     </View>
                     <View style={s.headerRight}>
                         <TouchableOpacity style={s.networkToggle} onPress={toggleNetwork}>
@@ -206,13 +213,7 @@ export default function WalletScreen() {
                                 {isDevnet ? "Devnet" : "Mainnet"}
                             </Text>
                         </TouchableOpacity>
-                        ? <ConnectButton
-                            connected={wallet.connected}
-                            connecting={wallet.connecting}
-                            publicKey={wallet.publicKey?.toBase58() ?? null}
-                            onConnect={wallet.connect}
-                            onDisconnect={wallet.disconnect}
-                        />
+                        
                     </View>
                 </View>
 
