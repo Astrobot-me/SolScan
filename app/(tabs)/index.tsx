@@ -19,6 +19,8 @@ import { Ionicons } from '@expo/vector-icons';
 import FavoriteButton from '@/components/FavoriteButton';
 import { ConnectButton } from '@/components/ConnectionButton';
 import useWallet from '@/hooks/use-wallet';
+import { useRouter } from 'expo-router';
+
 
 
 const short_txn_sig = (sig: string, count: number) => `${sig.slice(0, count)}....${sig.slice(-count)}`
@@ -50,10 +52,11 @@ export default function WalletScreen() {
     const addToFavorite = useWalletStore(state => state.addFavorite)
     const addToHistory = useWalletStore(state => state.addToHistory)
     const toggleNetwork = useWalletStore(state => state.toggleNetwork)
-    const wallet = useWallet(); 
+    const wallet = useWallet();
 
     const RPC = isDevnet ? "https://api.devnet.solana.com" : "https://api.mainnet-beta.solana.com";
 
+    const router = useRouter(); 
 
     async function rpc_call(method: string, params: any[]) {
 
@@ -213,7 +216,7 @@ export default function WalletScreen() {
                                 {isDevnet ? "Devnet" : "Mainnet"}
                             </Text>
                         </TouchableOpacity>
-                        
+
                     </View>
                 </View>
 
@@ -283,6 +286,15 @@ export default function WalletScreen() {
                                 <Text style={s.sol}>SOL</Text>
                             </View>
                             <Text style={s.addr}>{short_txn_sig(address.trim(), 6)}</Text>
+                            {wallet.connected && (
+                                <TouchableOpacity
+                                    style={s.sendNav}
+                                    onPress={() => router.push("/send")}
+                                >
+                                    <Ionicons name="paper-plane" size={18} color="#0D0D12" />
+                                    <Text style={s.sendNavText}>Send SOL</Text>
+                                </TouchableOpacity>
+                            )}
                         </View>
                     )
                 }

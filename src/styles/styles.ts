@@ -57,6 +57,22 @@ export const s = StyleSheet.create({
 		borderColor: "#2A2A35",
 		gap: 6,
 	},
+	sendNav: {
+		flexDirection: "row",
+		alignItems: "center",
+		justifyContent: "center",
+		backgroundColor: "#14F195",
+		paddingVertical: 12,
+		paddingHorizontal: 20,
+		borderRadius: 12,
+		marginTop: 20,
+		gap: 8,
+	},
+	sendNavText: {
+		color: "#0D0D12",
+		fontSize: 15,
+		fontWeight: "600",
+	},
 	networkDot: {
 		width: 8,
 		height: 8,
