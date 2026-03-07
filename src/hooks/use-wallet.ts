@@ -26,6 +26,8 @@ export default function useWallet() {
 	const [connecting, setConnecting] = useState<boolean>(false);
 	const [sending, setSending] = useState<boolean>(false);
 	const isDevnet = useWalletStore((state) => state.isDevnet);
+	const setConnectedPubKey = useWalletStore( (state) => state.setConnectedPubKey); 
+	const connectedPubKey = useWalletStore( (state) => state.connectedPubKey); 
 
 	const cluster = !isDevnet ? "mainnet-beta" : "devnet";
 
@@ -47,6 +49,8 @@ export default function useWallet() {
 				Buffer.from(authres.accounts[0].address, "base64"),
 			);
 			setPubKey(pubkey);
+			setConnectedPubKey(pubkey); 
+
 		} catch (error) {
 			console.log("Error Occured", error);
 			throw error;
@@ -74,11 +78,14 @@ export default function useWallet() {
 			console.log("[useWallet] sendSOL() called");
 			console.log("[useWallet] to:", toAddress, "amount:", amountSOL);
 
-			if (!publicKey) {
+			if (!connectedPubKey) {
 				throw new Error("Wallet not connected");
 			}
 
+			setPubKey(connectedPubKey)
 			setSending(true);
+
+			let pubkey = connectedPubKey; 
 
 			try {
 				// step 1: get blockhash
@@ -94,10 +101,10 @@ export default function useWallet() {
 
 				const transaction = new Transaction();
 				transaction.recentBlockhash = blockhash;
-				transaction.feePayer = publicKey;
+				transaction.feePayer = pubkey as PublicKey;
 				transaction.add(
 					SystemProgram.transfer({
-						fromPubkey: publicKey,
+						fromPubkey: pubkey as PublicKey,
 						toPubkey: toPublicKey,
 						lamports,
 					}),

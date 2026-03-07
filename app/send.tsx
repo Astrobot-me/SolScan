@@ -13,6 +13,7 @@ export default function send() {
     const [amount, setAmount] = useState("")
 
     const isDevnet = useWalletStore(state => state.isDevnet)
+    const connectedPubKey = useWalletStore(state => state.connectedPubKey)
     const router = useRouter();
     const wallet = useWallet();
 
@@ -56,11 +57,12 @@ export default function send() {
 
     }
 
-    if (!wallet.connected) {
+    if (!connectedPubKey) {
         return (
             <View style={styles.center}>
                 <Ionicons name="wallet-outline" size={64} color="#333" />
                 <Text style={styles.emptyTitle}>Wallet Not Connected</Text>
+                {/* <Text style={styles.emptyTitle}>{connectedPubKey.toBase58()}</Text> */}
                 <Text style={styles.emptyText}>
                     Connect your wallet from the Explorer tab first.
                 </Text>
